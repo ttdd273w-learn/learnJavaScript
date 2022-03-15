@@ -4,8 +4,6 @@ I will follow online tutorials to learn all about JavaScript. I will use this RE
 
 Credits to: [FreeCodeAcademy](https://youtu.be/PkZNo7MFNFg)
 
-Checkpoint: [YouTube Link](https://youtu.be/PkZNo7MFNFg?t=1626)
-
 ## Running JavaScript
 All web browsers are able to run JavaScript, so you don't even need to download anything to run it.
 
@@ -84,5 +82,28 @@ Same as `myVar--` or `myVar++` for addition
 
 ## Concatenate Strings
 - You can concatenate strings with a plus sign
+- You can concatenate strings with plus equals
+- `var myName = "My name is " + nameVariable + "."`
+- You can also add together variables 
+  - `var someAdj = "worthwhile"`
+  - `var sentence = "This is "`
+  - `sentence += worthwhile`
 
+## Length of a string
+- `var firstName = "Hello"`
+- `firstNameLength = firstName.length`
 
+## Getting specific index of a string
+- You want to use the bracket notation
+- `firstLetter = firstName[0]`
+- Get last letter with `letter = firstName[firstName.length - 1]`
+
+## String immutability
+- Strings are immutable, or rather you can't change individual letters
+  - `var sent = "Jello World"`
+  - `sent[0] = 'H'`
+  - This will not work
+
+## Arrays 
+
+Checkpoint: [YouTube Link](https://youtu.be/PkZNo7MFNFg?t=2449)
