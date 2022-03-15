@@ -4,7 +4,7 @@ I will follow online tutorials to learn all about JavaScript. I will use this RE
 
 Credits to: [FreeCodeAcademy](https://youtu.be/PkZNo7MFNFg)
 
-Checkpoint: [YouTubeLink]()
+Checkpoint: [YouTube Link](https://youtu.be/PkZNo7MFNFg?t=1626)
 
 ## Running JavaScript
 All web browsers are able to run JavaScript, so you don't even need to download anything to run it.
@@ -58,7 +58,31 @@ It's conventional to use camelCase, unlike snake_case in Ocaml.
 - `var product = 8 * 10 `
 - `var quotient = 66 / 33`
 
-## Increment/Decrement Numbers
+## Increment / Decrement Numbers
 - `myVar = myVar - 1;`
 Same as `myVar--` or `myVar++` for addition
+
+## Multiplying deciamls 
+- Similarly, it is pretty much the same `var product = 2.0 * 2.5`
+  - This is decimal multiplcation
+- `var quotient = 4.4 / 2.0`
+- `var remainder = 11 % 3`
+
+## Compound Assignment
+- `a = a + 3` to assign values compoundly
+- `a += 9`
+- `b -= 6` 
+- Same for multiplication and divison: `*=` and `\=`
+
+## String variables 
+- `var name = Hello`
+- There are of course also escape characters
+  - `var string = "I am a \"double quoted\" string."` 
+  - Another way to do this is to have it start with single quotes, and then using double quotes inside of it 
+  - You can also use backticks \`string\` to escape it
+  - A list of things you can escape out: \', \", \\, \n, \r (carriage return), \t (tab), \b (backspace), \f (form feed)
+
+## Concatenate Strings
+- You can concatenate strings with a plus sign
+
 
