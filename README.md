@@ -105,5 +105,29 @@ Same as `myVar--` or `myVar++` for addition
   - This will not work
 
 ## Arrays 
+- Similar to arrays in other languages 
+  - `var myArray = ["John", 23]`
+  - Every element is separated by a comman, can be any data type
+- Nested arrays
+  - `var ourArray = [["the university"],["keep going!"]]`
+- Access them with square brackets
+- You can modify them with square brackets as well
+  - `var myArray = [1,2,3]`
+  - `myArray[0] = 10`
+  - `myArray` becomes `[10,2,3]`
+- You can use `[1][2]` to access nested arrays
+- Manipulate arrays with `push` function
+  - `ourArray.push([1])`
+  - Pushes the element to the end of array that calls push
+- Manipulate arrays with `pop` function
+  - `ourArray.pop()`
+  - Pops the last element of the array that calls it
+- Manipulate arrays with `shift` function
+  - `ourArray.shift()`
+  - Pops the first element of the array that calls it
+- Manipulate arrays with `unshift` function
+  - `ourArray.unshift("element")`
+  - Pushes the element to the beginning of array that calls unshift
 
-Checkpoint: [YouTube Link](https://youtu.be/PkZNo7MFNFg?t=2449)
+
+Checkpoint: [YouTube Link](https://youtu.be/PkZNo7MFNFg?t=3342)
