@@ -129,5 +129,100 @@ Same as `myVar--` or `myVar++` for addition
   - `ourArray.unshift("element")`
   - Pushes the element to the beginning of array that calls unshift
 
+## Scope and Functions
+- Visibility of Variables
+- Global - variables defined outside of a function block
+- You can also have global and local variables
+  - When you do this, the local variable takes precedence
+- Return values from functions with the `return` keyword
+- If you don't have any specifier, then it is just a void function
 
-Checkpoint: [YouTube Link](https://youtu.be/PkZNo7MFNFg?t=3342)
+## Boolean Values
+- `true` and `false`
+- Can be used in function returns
+
+## Comparison operators
+- `==` for equality
+  - Not the single equality sign, because that's the assingment operator.
+- Strict equality sign
+  - `===`
+  - Difference is that it doesn't do type conversion
+    - `3 === 3` is true
+    - `3 === '3'` is false
+  - Not equal: `!=`
+  - Strict inequality
+    - `!==`, also doesn't do type conversion
+  - Greater than operator
+    - `>`
+  - Greater than or equal to
+    - `>=`
+  - Same thing for less than and less than or equal to
+- Logical and operator
+  - `val <= 50 && val >= 25`
+  - `&&` is the operator in JavaScript
+- Logical or operator
+  - `val < 10 || val > 20`
+  - `||` is the operator
+
+## If statements
+- Order is very important
+- It will go into different branches because it evaluates from the top to bottom
+- You can also chain if else statements
+
+## Switch statements
+- See example code for it
+- Sometimes it's easier to understand and write than a chain of if else statements
+- Kind of like pattern matching
+
+## Object in JavaScript
+- Really similar to Ocaml
+- Similar to arrays but instead of indicies, you use properties.
+- `var ourDog = {"name": "Camper", "legs" : 4, friends: []}`
+- Dot notation to access properties
+  - ourDog.name
+- You can also use bracket notation
+  - Necessary if the property has a space
+  - `testObj["an entree"]`
+  - You can use a variable inside the bracket notation to access it as well
+- Updating object properties
+  - `ourDog.name = "Happy Camper"`
+- Adding new properties to an existing object
+  - `ourDog.bark = "Yes"`
+  - This will create a new property called bark
+  - `ourDog["bark"] = "No"`
+- Deleting a property
+  - Use `delete` keyword
+  - `delete ourDog.bark`
+- Objects can be thought of as a key value storage, so you can use objects to look up values using `switch` statements
+  - Property name is the key, and property value is the value
+- Check if an object has a property or not
+  - Use the `hasOwnProperty` function
+  - `myObj.hasOwnProperty(property)` returns true of false if it has the property
+- List of objects is very similar to JSONs
+- Accessing nested objects
+  - Chain dot notation
+  - `myStorage.car.inside`
+- Accessing nested arrays
+  - `myPlants[1].list[1]`
+
+## While loops
+- Similar to that in Java
+- `while (i<5)`
+
+# For loops
+- `for (var i = 0; i < 5; i++) {}`
+- Pretty much the same thing as Java, except the constructor is not specific to any types
+- Incrementing by different amounts
+  - `for (var i = 0; i < 5; i += 2) {}`
+- Counting backwards
+  - `for (var i = 10, i > 0; i -= 2) {}`
+- Iterating through the array
+  - `for (var i = 0, i < ourArr.length; i++) {}`
+- You can also nest for loops, just like Java and other languages 
+  - `for (var i = 0; i < arr.length; i++)`
+    - `for (var j = 0; j < arr[i].length; j++)`
+
+
+
+
+Checkpoint: [YouTube Link](https://youtu.be/PkZNo7MFNFg?t=8554)
