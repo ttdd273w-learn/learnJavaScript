@@ -209,7 +209,7 @@ Same as `myVar--` or `myVar++` for addition
 - Similar to that in Java
 - `while (i<5)`
 
-# For loops
+## For loops
 - `for (var i = 0; i < 5; i++) {}`
 - Pretty much the same thing as Java, except the constructor is not specific to any types
 - Incrementing by different amounts
@@ -222,7 +222,94 @@ Same as `myVar--` or `myVar++` for addition
   - `for (var i = 0; i < arr.length; i++)`
     - `for (var j = 0; j < arr[i].length; j++)`
 
+## Do-While Loops
+- While loops always checks the condition and then run it
+- Do while loops will run it first and then check the condition
+- Syntax
+  - `do {} while (i < 5)`
+
+## Random Numbers
+- `Math.random()`
+  - Generates a decimal number that's between 0 and 1, it can be 0, but never 1
+- Whole numbers
+  - `Math.floor(Math.random() * 20)`
+  - Random number between 1 and 20
+- Generate random numbers within a range
+  - `Math.floor(Math.random() * (max - min + 1)) + min`
+
+## parseInt function
+- `parseInt(str)`
+- Can also be used with a radix, which specifies the base of the number
+- Default is base 10
+  - `var str = "1001"`
+  - `parseInt(str, 2)`
+
+## Ternary Operator
+- `Condition ? statement if true : statement if false`
+- Multiple ternary operator (chaining them)
+  - `num > 0 ? "positive" : num < 0 ? "negative" : "zero"`
+
+## Difference between var and let
+- It used to the be the case that you have to use the `var` keyword 
+- `let` does not let you declare a variable twice
+  - Produces a duplicate variable error
+- Scope
+  - `var` is declared globally, or locally if declared inside a function
+  - `let` is only limited to the block or expression it was declared in
+
+## Const 
+- `const` is another way to declare a variable, but it is read only, so you cannot reassign a const
+- Trying to change it will cause read only error
+- This can be helpful for catching erros
+- PRACTICE- You should use all CAPS for constants
+- In your own code, you should mainly use `const` and `let`
+
+## Mutate an array declared with const
+- While you can't reassign a variable, you can mutate an array
+  - `s[0] = 1`
+
+## Prevent object mutation
+-`Object.freeze(MATH_CONSTANTS) `
+- To make the object immutable
+
+## Anonymous function 
+- `function()`
+- `() => {}`
+- You can specify a default argument with an equal sign
+- Use the rest operator to take a variable number of arguments
+  - `...args`
+- Spread operator expands or spreads out an already existing array
+  - `[...arr1]`
+  - Useful for making a copy of an arrayaaaaasssss
+
+## Use destructuring assignment to assign variables from objects
+- Neatly assigning values from an object to different variables
+
+## Create strings using template literals
+- Special type of string to make it easier to create complex strings
+- Make it with backtick
+- Advantages:
+  - You can make multi-line strings
+  - You don't need to escape special characters
+  - You can put variables right in the strings, but enclose it with `{}`
+
+## Create simple fields
+- `const createPerson = (name, age, gender) => ( { name, age, gender } );`
 
 
+## Class constructors
+- See example code
+- Constructors
+- Getters and setters
 
-Checkpoint: [YouTube Link](https://youtu.be/PkZNo7MFNFg?t=8554)
+## Import and export
+- Importing and exporting modules from other libraries or functions
+- `import * as capitalizedStrings from "filename"`
+  - This imports everything
+  - It creates a new object that stores everything in there
+- Export fallback
+  - Often used if you want to export one thing from a file
+  - `export default function name() {}`
+- Import default
+  - `import subtract from "file_name"`
+  - Don't use curly braces
