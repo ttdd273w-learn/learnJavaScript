@@ -8,3 +8,6 @@ console.log(cap);
 export const foo = "foo";
 
 export { capitalizeString };
+
+// use * to import everything
+import * as capitalizedStrings from "filename";
