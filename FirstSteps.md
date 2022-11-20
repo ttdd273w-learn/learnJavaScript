@@ -900,3 +900,522 @@ myName = 'Bob';
 - Again, this is a sensible language decision. There is no reason to redeclare variables — it just makes things more confusing.
 
 - For these reasons and more, we recommend that you use `let` in your code, rather than `var`. There is no longer any reason to use `var`, as it has been supported since Internet Explorer 11.
+
+# Basic math in JavaScript — numbers and operators
+
+- At this point in the course, we discuss math in JavaScript — how we can use operators and other features to successfully manipulate numbers to do our bidding.
+
+## Everybody loves math
+
+- Okay, maybe not. Some of us like math, some of us have hated math ever since we had to learn multiplication tables and long division in school, and some of us sit somewhere in between the two. But none of us can deny that math is a fundamental part of life that we can't get very far without. This is especially true when we are learning to program JavaScript (or any other language for that matter) — so much of what we do relies on processing numerical data, calculating new values, and so on, that you won't be surprised to learn that JavaScript has a full-featured set of math functions available.
+
+### Types of numbers
+
+- In programming, even the humble decimal number system that we all know so well is more complicated than you might think. We use different terms to describe different types of decimal numbers, for example:
+  - **Integers** are floating-point numbers without a fraction. They can either be positive or negative, e.g. 10, 400, or -5.
+  - **Floating point numbers** (floats) have decimal points and decimal places, for example 12.5, and 56.7786543.
+  - **Doubles** are a specific type of floating point number that have greater precision than standard floating point numbers (meaning that they are accurate to a greater number of decimal places).
+- We even have different types of number systems! Decimal is base 10 (meaning it uses 0–9 in each column), but we also have things like:
+
+  - **Binary** — The lowest level language of computers; 0s and 1s.
+  - **Octal** — Base 8, uses 0–7 in each column.
+  - **Hexadecimal** — Base 16, uses 0–9 and then a–f in each column. You may have encountered these numbers before when setting colors in CSS.
+
+- Unlike some other programming languages, JavaScript only has one data type for numbers, both integers and decimals — you guessed it, Number. This means that whatever type of numbers you are dealing with in JavaScript, you handle them in exactly the same way.
+
+### It's all numbers to me
+
+- A quick example
+
+```
+const myInt = 5;
+const myFloat = 6.667;
+myInt;
+myFloat;
+```
+
+- Number values are typed in without quote marks — try declaring and initializing a couple more variables containing numbers before you move on.
+
+- Now let's check that both our original variables are of the same datatype. There is an operator called `typeof` in JavaScript that does this. Enter the below two lines as shown:
+
+```
+typeof myInt;
+typeof myFloat;
+```
+
+- You should get "number" returned in both cases — this makes things a lot easier for us than if different numbers had different data types, and we had to deal with them in different ways. Phew!
+
+### Useful Number methods
+
+- The `Number` object, an instance of which represents all standard numbers you'll use in your JavaScript, has a number of useful methods available on it for you to manipulate numbers.
+- We don't cover these in detail in this article because we wanted to keep it as a simple introduction and only cover the real basic essentials for now; however, once you've read through this module a couple of times it is worth going to the object reference pages and learning more about what's available.
+
+- For example, to round your number to a fixed number of decimal places, use the `toFixed()` method. Type the following lines into your browser's console:
+
+```
+const lotsOfDecimal = 1.766584958675746364;
+lotsOfDecimal;
+const twoDecimalPlaces = lotsOfDecimal.toFixed(2);
+twoDecimalPlaces;
+```
+
+### Converting to number data types
+
+- Sometimes you might end up with a number that is stored as a string type, which makes it difficult to perform calculations with it.
+- This most commonly happens when data is entered into a form input, and the input type is text.
+  - There is a way to solve this problem — passing the string value into the `Number()` constructor to return a number version of the same value.
+
+For example, try typing these lines into your console:
+
+```
+let myNumber = "74";
+myNumber += 3;
+```
+
+- You end up with the result 743, not 77, because `myNumber` is actually defined as a string.
+
+- To fix the calculation, you can do this:
+
+```
+let myNumber = "74";
+myNumber = Number(myNumber) + 3;
+```
+
+## Arithmetic operators
+
+- Arithmetic operators are the basic operators that we use to do sums in JavaScript:
+  - `+` for addition
+  - `-` for subtraction
+  - `*` for multiplication
+  - `/` for division
+  - `%` for modulo
+  - `**` for exponent
+
+### Operator precedence
+
+- Take the example, where `num1` is 10, and `num2` is 50:
+
+```
+num2 + num1 / 8 + 2;
+```
+
+- As a human being, you may read this as "50 plus 10 equals 60", then "8 plus 2 equals 10", and finally "60 divided by 10 equals 6". Not true by pemdas.
+
+- But the browser does "10 divided by 8 equals 1.25", then "50 plus 1.25 plus 2 equals 53.25".
+
+- This is because of **operator precedence** — some operators are applied before others when calculating the result of a calculation (referred to as an expression, in programming). Operator precedence in JavaScript is the same as is taught in math classes in school — multiply and divide are always done first, then add and subtract (the calculation is always evaluated from left to right).
+
+## Increment and decrement operators
+
+- Sometimes you'll want to repeatedly add or subtract one to or from a numeric variable value. This can be conveniently done using the increment (`++`) and decrement (`--`) operators.
+- We used `++` in our "Guess the number" game back in our first splash into JavaScript article, when we added 1 to our guessCount variable to keep track of how many guesses the user has left after each turn.
+
+- Uou can only increment an existing variable. Like this:
+
+```
+let num1 = 4;
+num1++;
+```
+
+- **Note**: You can make the browser do it the other way round — increment/decrement the variable then return the value — by putting the operator at the start of the variable instead of the end.
+- Try the above examples again, but this time use `++num1` and `--num2`.
+
+## Assignment operators
+
+- Assignment operators are operators that assign a value to a variable. We have already used the most basic one, `=`, loads of times — it assigns the variable on the left the value stated on the right:
+
+```
+let x = 3; // x contains the value 3
+let y = 4; // y contains the value 4
+x = y; // x now contains the same value y contains, 4
+```
+
+- But there are some more complex types, which provide useful shortcuts to keep your code neater and more efficient. The most common are listed below:
+  - `+=`
+  - `-=`
+  - `*=`
+  - `/=`
+
+## Comparison operators
+
+- `===`, strict equality
+- `!==`, strict-non-equality
+- `<`, less than
+- `>`, greater than
+- `<=`, less than or equal to
+- `>=`, greater than or equal to
+
+- **Note**: You may see some people using `==` and `!=` in their tests for equality and non-equality. These are valid operators in JavaScript, but they differ from `===`/`!==`.
+- The former versions test whether the values are the same but not whether the values' datatypes are the same.
+- The latter, strict versions test the equality of both the values and their datatypes. The strict versions tend to result in fewer errors, so we recommend you use them.
+
+# Handling text — strings in JavaScript
+
+- Next, we'll turn our attention to strings — this is what pieces of text are called in programming. In this article, we'll look at all the common things that you really ought to know about strings when learning JavaScript, such as creating strings, escaping quotes in strings, and joining strings together.
+
+## The power of words
+
+- Words are very important to humans — they are a large part of how we communicate. Since the Web is a largely text-based medium designed to allow humans to communicate and share information, it is useful for us to have control over the words that appear on it. HTML provides structure and meaning to our text, CSS allows us to precisely style it, and JavaScript contains a number of features for manipulating strings, creating custom welcome messages and prompts, showing the right text labels when needed, sorting terms into the desired order, and much more.
+
+- Pretty much all of the programs we've shown you so far in the course have involved some string manipulation.
+
+## Strings — the basics
+
+- Initialize as normal with double quotes
+
+### Single quotes vs. double quotes
+
+1. In JavaScript, you can choose single quotes or double quotes to wrap your strings in. Both of the following will work okay:
+
+```
+const sgl = 'Single quotes.';
+const dbl = "Double quotes";
+console.log(sgl);
+console.log(dbl);
+```
+
+2. There is very little difference between the two, and which you use is down to personal preference. You should choose one and stick to it, however; differently quoted code can be confusing, especially if you use two different quotes on the same string! The following will return an error:
+
+```
+const badQuotes = 'What on earth?";
+```
+
+3. The browser will think the string has not been closed because the other type of quote you are not using to contain your strings can appear in the string. For example, both of these are okay:
+
+```
+const sglDbl = 'Would you eat a "fish supper"?';
+const dblSgl = "I'm feeling blue.";
+console.log(sglDbl);
+console.log(dblSgl);
+```
+
+4. However, you can't include the same quote mark inside the string if it's being used to contain them. The following will error, as it confuses the browser as to where the string ends:
+
+```
+const bigmouth = 'I've got no right to take my place…';
+```
+
+### Escaping characters in a string
+
+- To fix our previous problem code line, we need to escape the problem quote mark. Escaping characters means that we do something to them to make sure they are recognized as text, not part of the code. In JavaScript, we do this by putting a backslash just before the character. Try this:
+
+```
+const bigmouth = 'I\'ve got no right to take my place…';
+console.log(bigmouth);
+```
+
+## Concatenating strings
+
+- Concatenate just means "join together". To join together strings in JavaScript you can use a different type of string, called a **template literal**.
+
+- A template literal looks just like a normal string, but instead of using single or double quote marks (`'` or `"`), you use backtick characters (\`):
+
+```
+const greeting = \`Hello\`;
+```
+
+- This can work just like a normal string, except you can include variables in it, wrapped inside `${ }` characters, and the variable's value will be inserted into the result:
+
+```
+const name = "Chris";
+const greeting = `Hello, ${name}`;
+console.log(greeting); // "Hello, Chris"
+```
+
+- You can use the same technique to join together two variables:
+
+```
+const one = "Hello, ";
+const two = "how are you?";
+const joined = `${one}${two}`;
+console.log(joined); // "Hello, how are you?"
+```
+
+### Concatenation in context
+
+- Here's a quick example:
+
+```
+<button>Press me</button>
+```
+
+```
+const button = document.querySelector("button");
+
+function greet() {
+  const name = prompt("What is your name?");
+  alert(`Hello ${name}, nice to see you!`);
+}
+
+button.addEventListener("click", greet);
+```
+
+- Here we're using the `window.prompt()` function, which asks the user to answer a question via a popup dialog box then stores the text they enter inside a given variable — in this case name.
+- We then use the `window.alert()` function to display another popup containing a string which inserts the name into a generic greeting message.
+
+### Concatenation using "+"
+
+- You can also concatenate strings using the `+` operator:
+
+```
+const greeting = "Hello";
+const name = "Chris";
+console.log(greeting + ", " + name); // "Hello, Chris"
+```
+
+- However, template literals usually give you more readable code:
+
+```
+const greeting = "Hello";
+const name = "Chris";
+console.log(`${greeting}, ${name}`); // "Hello, Chris"
+```
+
+## Numbers vs. strings
+
+- So what happens when we try to combine a string and a number? Let's try it in our console:
+
+```
+const name = "Front ";
+const number = 242;
+console.log(`${name}${number}`); // "Front 242"
+```
+
+- You might expect this to return an error, but it works just fine. Trying to represent a string as a number doesn't really make sense, but representing a number as a string does, so the browser converts the number to a string and concatenates the two strings.
+
+- If you have a numeric variable that you want to convert to a string but not change otherwise, or a string variable that you want to convert to a number but not change otherwise, you can use the following two constructs:
+
+  - The `Number` object converts anything passed to it into a number, if it can. Try the following:
+
+```
+const myString = "123";
+const myNum = Number(myString);
+console.log(typeof myNum);
+```
+
+- Conversely, every number has a method called `toString()` that converts it to the equivalent string. Try this:
+
+```
+const myNum2 = 123;
+const myString2 = myNum2.toString();
+console.log(typeof myString2);
+```
+
+## Including expressions in strings
+
+- You can include JavaScript expressions in template literals, as well as simple variables, and the results will be included in the result:
+
+```
+const song = "Fight the Youth";
+const score = 9;
+const highestScore = 10;
+const output = `I like the song ${song}. I gave it a score of ${ (score / highestScore) * 100 }%.`;
+console.log(output); // "I like the song Fight the Youth. I gave it a score of 90%."
+```
+
+## Multiline strings
+
+- Template literals respect the line breaks in the source code, so you can write strings that span multiple lines like this:
+
+```
+const output = `I like the song.
+I gave it a score of 90%.`;
+console.log(output);
+
+/*
+I like the song.
+I gave it a score of 90%.
+*/
+```
+
+- To have the equivalent output using a normal string you'd have to include line break characters (`\n`) in the string:
+
+```
+const output = "I like the song.\nI gave it a score of 90%.";
+console.log(output);
+
+/*
+I like the song.
+I gave it a score of 90%.
+*/
+```
+
+# Useful string methods
+
+- Now that we've looked at the very basics of strings, let's move up a gear and start thinking about what useful operations we can do on strings with built-in methods, such as finding the length of a text string, joining and splitting strings, substituting one character in a string for another, and more.
+
+## Strings as objects
+
+- Most things are objects in JavaScript. When you create a string, for example by using
+
+```
+const string = 'This is my string';
+```
+
+- your variable becomes a string object instance, and as a result has a large number of properties and methods available to it. You can see this if you go to the `String` object page and look down the list on the side of the page!
+
+## Finding the length of a string
+
+- This is easy — you use the length property. Try entering the following lines:
+
+```
+const browserType = 'mozilla';
+browserType.length;
+```
+
+- This should return the number 7, because "mozilla" is 7 characters long.
+- This is useful for many reasons; for example, you might want to find the lengths of a series of names so you can display them in order of length, or let a user know that a username they have entered into a form field is too long if it is over a certain length.
+
+## Retrieving a specific string character
+
+- On a related note, you can return any character inside a string by using **square bracket notation** — this means you include square brackets (`[]`) on the end of your variable name.
+- Inside the square brackets, you include the number of the character you want to return, so for example to retrieve the first letter you'd do this:
+
+```
+browserType[0];
+```
+
+- To retrieve the last character of any string, we could use the following line, combining this technique with the `length` property we looked at above:
+
+```
+browserType[browserType.length-1];
+```
+
+## Testing if a string contains a substring
+
+- Sometimes you'll want to find if a smaller string is present inside a larger one (we generally say if a substring is present inside a string). This can be done using the `includes()` method, which takes a single parameter — the substring you want to search for.
+
+- It returns `true` if the string contains the substring, and `false` otherwise.
+
+```
+const browserType = 'mozilla';
+
+if (browserType.includes('zilla')) {
+console.log('Found zilla!');
+} else {
+console.log('No zilla here!');
+}
+```
+
+- Often you'll want to know if a string starts or ends with a particular substring. This is a common enough need that there are two special methods for this: `startsWith()` and `endsWith()`:
+
+```
+const browserType = 'mozilla';
+
+if (browserType.startsWith('zilla')) {
+  console.log('Found zilla!');
+} else {
+  console.log('No zilla here!');
+}
+```
+
+```
+const browserType = 'mozilla';
+
+if (browserType.endsWith('zilla')) {
+  console.log('Found zilla!');
+} else {
+  console.log('No zilla here!');
+}
+```
+
+## Finding the position of a substring in a string
+
+- You can find the position of a substring inside a larger string using the `indexOf()` method. This method takes two parameters – the substring that you want to search for, and an optional parameter that specifies the starting point of the search.
+
+- If the string contains the substring, `indexOf()` returns the index of the first occurrence of the substring. If the string does not contain the substring, `indexOf()` returns -1.
+
+```
+const tagline = 'MDN - Resources for developers, by developers';
+console.log(tagline.indexOf('developers')); // 20
+```
+
+- Starting at 0, if you count the number of characters (including the whitespace) from the beginning of the string, the first occurrence of the substring "developers" is at index 20.
+
+```
+console.log(tagline.indexOf('x')); // -1
+```
+
+- This, on the other hand, returns -1 because the character x is not present in the string.
+
+- So now that you know how to find the first occurrence of a substring, how do you go about finding subsequent occurrences? You can do that by passing in a value that's greater than the index of the previous occurrence as the second parameter to the method.
+
+```
+const firstOccurrence = tagline.indexOf('developers');
+const secondOccurrence = tagline.indexOf('developers', firstOccurrence + 1);
+
+console.log(firstOccurrence); // 20
+console.log(secondOccurrence); // 35
+```
+
+- Here we're telling the method to search for the substring `"developers"` starting at index 21 (`firstOccurrence + 1`), and it returns the index 35.
+
+## Extracting a substring from a string
+
+- You can extract a substring from a string using the `slice()` method. You pass it:
+  - the index at which to start extracting
+  - the index at which to stop extracting. This is exclusive, meaning that the character at this index is not included in the extracted substring.
+- For example:
+
+```
+const browserType = 'mozilla';
+console.log(browserType.slice(1, 4)); // "ozi"
+```
+
+- If you know that you want to extract all of the remaining characters in a string after a certain character, you don't have to include the second parameter. Instead, you only need to include the character position from where you want to extract the remaining characters in a string. Try the following:
+
+```
+browserType.slice(2); // "zilla"
+```
+
+- Note: slice() has other options too.
+
+## Changing case
+
+- The string methods `toLowerCase()` and `toUpperCase()` take a string and convert all the characters to lower- or uppercase, respectively.
+- This can be useful for example if you want to normalize all user-entered data before storing it in a database.
+
+```
+const radData = 'My NaMe Is MuD';
+console.log(radData.toLowerCase());
+console.log(radData.toUpperCase());
+```
+
+## Updating parts of a string
+
+- You can replace one substring inside a string with another substring using the `replace()` method.
+
+- In this example, we're providing two parameters — the string we want to replace, and the string we want to replace it with:
+
+```
+const browserType = 'mozilla';
+const updated = browserType.replace('moz','van');
+
+console.log(updated);      // "vanilla"
+console.log(browserType);  // "mozilla"
+```
+
+- **Note that `replace()`, like many string methods, doesn't change the string it was called on, but returns a new string.**
+- If you want to update the original `browserType` variable, you would have to do something like this:
+
+```
+let browserType = 'mozilla';
+browserType = browserType.replace('moz','van');
+
+console.log(browserType);  // "vanilla"
+```
+
+- Also note that we now have to declare `browserType` using `let`, not `const`, because we are reassigning it.
+
+- Be aware that `replace()` in this form only changes the first occurrence of the substring. If you want to change all occurrences, you can use `replaceAll()`:
+
+```
+let quote = 'To be or not to be';
+quote = quote.replaceAll('be','code');
+
+console.log(quote);  // "To code or not to code"
+```
+
+# Arrays
+
+- In the final article of this module, we'll look at arrays — a neat way of storing a list of data items under a single variable name. Here we look at why this is useful, then explore how to create an array, retrieve, add, and remove items stored in an array, and more besides.
