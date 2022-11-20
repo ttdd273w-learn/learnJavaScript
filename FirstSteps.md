@@ -399,3 +399,504 @@ for (const button of buttons) {
 ```
 I want you to create a simple guess the number type game. It should choose a random number between 1 and 100, then challenge the player to guess the number in 10 turns. After each turn, the player should be told if they are right or wrong, and if they are wrong, whether the guess was too low or too high. It should also tell the player what numbers they previously guessed. The game will end once the player guesses correctly, or once they run out of turns. When the game ends, the player should be given an option to start playing again.
 ```
+
+- Upon looking at this brief, the first thing we can do is to start breaking it down into simple actionable tasks, in as much of a programmer mindset as possible:
+
+1. Generate a random number between 1 and 100.
+2. Record the turn number the player is on. Start it on 1.
+3. Provide the player with a way to guess what the number is.
+4. Once a guess has been submitted first record it somewhere so the user can see their previous guesses.
+5. Next, check whether it is the correct number.
+6. If it is correct:
+   1. Display congratulations message.
+   2. Stop the player from being able to enter more guesses (this would mess the game up).
+   3. Display control allowing the player to restart the game.
+7. If it is wrong and the player has turns left:
+   1. Tell the player they are wrong and whether their guess was too high or too low.
+   2. Allow them to enter another guess.
+   3. Increment the turn number by 1.
+8. If it is wrong and the player has no turns left:
+   1. Tell the player it is game over.
+   2. Stop the player from being able to enter more guesses (this would mess the game up).
+   3. Display control allowing the player to restart the game.
+9. Once the game restarts, make sure the game logic and UI are completely reset, then go back to step 1.
+
+- This section of the code sets up the variables and constants we need to store the data our program will use.
+
+- Variables are basically names for values (such as numbers, or strings of text). You create a variable with the keyword `let` followed by a name for your variable.
+
+- Constants are also used to name values, but unlike variables, you can't change the value once set. In this case, we are using constants to store references to parts of our user interface. The text inside some of these elements might change, but each constant always references the same HTML element that it was initialized with. You create a constant with the keyword `const` followed by a name for the constant.
+
+- You can assign a value to your variable or constant with an equals sign (`=`) followed by the value you want to give it.
+
+### Functions
+
+- Functions are reusable blocks of code that you can write once and run again and again, saving the need to keep repeating code all the time. This is really useful.
+- There are a number of ways to define functions, but for now we'll concentrate on one simple type.
+- Here we have defined a function by using the keyword `function`, followed by a name, with parentheses put after it. After that, we put two curly braces (`{ }`).
+- Inside the curly braces goes all the code that we want to run whenever we call the function.
+
+### Operators
+
+- JavaScript operators allow us to perform tests, do math, join strings together, and other such things.
+
+| Operator | Name           | Example |
+| -------- | -------------- | ------- |
+| +        | Addition       | 6 + 9   |
+| -        | Subtraction    | 20 - 15 |
+| \*       | Multiplication | 3 \* 7  |
+| /        | Division       | 10 / 5  |
+
+- You can also use the + operator to join text strings together (in programming, this is called concatenation). Try entering the following lines, one at a time:
+
+```
+const name = 'Bingo';
+name;
+const hello = ' says hello!';
+hello;
+const greeting = name + hello;
+greeting;
+```
+
+- There are also some shortcut operators available, called **augmented assignment operators**. For example, if you want to add a new text string to an existing one and return the result, you could do this:
+
+```
+let name1 = 'Bingo';
+name1 += ' says hello!';
+```
+
+- When we are running true/false tests (for example inside conditionals — see below) we use comparison operators. For example:
+
+| Operator | Name                                      | Example                                                                                                                |
+| -------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `===`    | Strict equality (is it exactly the same?) | 5 === 2 + 4 // false <br>'Chris' === 'Bob' // false<br>5 === 2 + 3 // true<br>2 === '2' // false; number versus string |
+| `!==`    | Non-equality (is it not the same?)        | 5 !== 2 + 4 // true<br>'Chris' !== 'Bob' // true<br>5 !== 2 + 3 // false<br>2 !== '2' // true; number versus string    |
+| `<`      | Less than                                 | 6 < 10 // true<br>20 < 10 // false<br>                                                                                 |
+| `>`      | Greater than                              | > 6 > 10 // false<br>> 20 > 10 // true                                                                                 |
+
+### Conditionals
+
+- Returning to our `checkGuess()` function, I think it's safe to say that we don't want it to just spit out a placeholder message. We want it to check whether a player's guess is correct or not, and respond appropriately.
+
+### Events
+
+- At this point, we have a nicely implemented `checkGuess()` function, but it won't do anything because we haven't called it yet.
+- Ideally, we want to call it when the "Submit guess" button is pressed, and to do this we need to use an event.
+- **Events** are things that happen in the browser — a button being clicked, a page loading, a video playing, etc. — in response to which we can run blocks of code.
+- **Event listeners** observe specific events and call **event handlers**, which are blocks of code that run in response to an event firing.
+
+- For example:
+
+```
+guessSubmit.addEventListener('click', checkGuess);
+```
+
+- Here we are adding an event listener to the `guessSubmit` button.
+- This is a method that takes two input values (called _arguments_) — the type of event we are listening out for (in this case `click`) as a string, and the code we want to run when the event occurs (in this case the `checkGuess()` function).
+- **Note that we don't need to specify the parentheses when writing it inside `addEventListener()`.**
+
+- Try saving and refreshing your code now, and your example should work — to a point.
+- The only problem now is that if you guess the correct answer or run out of guesses, the game will break because we've not yet defined the `setGameOver()` function that is supposed to be run once the game is over. Let's add our missing code now and complete the example functionality.
+
+### Finishing the game functionality
+
+```
+function setGameOver() {
+  guessField.disabled = true;
+  guessSubmit.disabled = true;
+  resetButton = document.createElement('button');
+  resetButton.textContent = 'Start new game';
+  document.body.append(resetButton);
+  resetButton.addEventListener('click', resetGame);
+}
+```
+
+- The first two lines disable the form text input and button by setting their disabled properties to `true`.
+  - This is necessary, because if we didn't, the user could submit more guesses after the game is over, which would mess things up.
+- The next three lines generate a new `<button>` element, set its text label to "Start new game", and add it to the bottom of our existing HTML.
+- The final line sets an event listener on our new button so that when it is clicked, a function called `resetGame()` is run.
+- Now we need to define this function too! Add the following code, again to the bottom of your JavaScript:
+
+```
+function resetGame() {
+  guessCount = 1;
+
+  const resetParas = document.querySelectorAll('.resultParas p');
+  for (const resetPara of resetParas) {
+    resetPara.textContent = '';
+  }
+
+  resetButton.parentNode.removeChild(resetButton);
+
+  guessField.disabled = false;
+  guessSubmit.disabled = false;
+  guessField.value = '';
+  guessField.focus();
+
+  lastResult.style.backgroundColor = 'white';
+
+  randomNumber = Math.floor(Math.random() * 100) + 1;
+}
+```
+
+- This rather long block of code completely resets everything to how it was at the start of the game, so the player can have another go. It:
+  - Puts the `guessCount` back down to 1.
+  - Empties all the text out of the information paragraphs. We select all paragraphs inside `<div class="resultParas"></div>`, then loop through each one, setting their `textContent` to `''` (an empty string).
+  - Removes the reset button from our code.
+  - Enables the form elements, and empties and focuses the text field, ready for a new guess to be entered.
+  - Removes the background color from the `lastResult` paragraph.
+  - Generates a new random number so that you are not just guessing the same number again!
+
+### Loops
+
+- One part of the above code that we need to take a more detailed look at is the `for...of` loop.
+- Loops are a very important concept in programming, which allow you to keep running a piece of code over and over again, until a certain condition is met.
+
+- For example:
+
+```
+const fruits = ['apples', 'bananas', 'cherries'];
+for (const fruit of fruits) {
+  console.log(fruit);
+}
+```
+
+- What happened? The strings `'apples', 'bananas', 'cherries'` were printed out in your console.
+
+- This is because of the loop.
+- The line `const fruits = ['apples', 'bananas', 'cherries'];` creates an array.
+- We will work through a complete Arrays guide later in this module, but for now: an array is a collection of items (in this case strings).
+
+- A `for...of` loop gives you a way to get each item in the array and run some JavaScript on it. The line for (`const fruit of fruits`) says:
+
+  1. Get the first item in `fruits`.
+  2. Set the `fruit` variable to that item, then run the code between the `{}` brackets.
+  3. Get the next item in `fruits`, and repeat 2, until you reach the end of `fruits`.
+
+- In this case, the code inside the brackets is writing out `fruit` to the console.
+
+- Now let's look at the loop in our number guessing game — the following can be found inside the `resetGame()` function:
+
+```
+const resetParas = document.querySelectorAll('.resultParas p');
+for (const resetPara of resetParas) {
+  resetPara.textContent = '';
+}
+```
+
+- This code creates a variable containing a list of all the paragraphs inside `<div class="resultParas">` using the `querySelectorAll()` method, then it loops through each one, removing the text content of each.
+
+- Note that even though `resetPara` is a constant, we can change its internal properties like `textContent`.
+
+### A small discussion on objects
+
+- Let's add one more final improvement before we get to this discussion.
+- Add the following line just below the `let resetButton`; line near the top of your JavaScript, then save your file:
+
+```
+guessField.focus();
+```
+
+- This line uses the `focus()` method to automatically put the text cursor into the `<input>` text field as soon as the page loads, meaning that the user can start typing their first guess right away, without having to click the form field first.
+- It's only a small addition, but it improves usability — giving the user a good visual clue as to what they've got to do to play the game.
+
+- Let's analyze what's going on here in a bit more detail.
+- In JavaScript, most of the items you will manipulate in your code are objects.
+- An object is a collection of related functionality stored in a single grouping.
+- You can create your own objects, but that is quite advanced and we won't be covering it until much later in the course.
+- For now, we'll just briefly discuss the built-in objects that your browser contains, which allow you to do lots of useful things.
+
+- In this particular case, we first created a `guessField` constant that stores a reference to the text input form field in our HTML — the following line can be found amongst our declarations near the top of the code:
+
+```
+const guessField = document.querySelector('.guessField');
+```
+
+- To get this reference, we used the `querySelector()` method of the document object. `querySelector()` takes one piece of information — a CSS selector that selects the element you want a reference to.
+
+- Because `guessField` now contains a reference to an `<input>` element, it now has access to a number of properties (basically variables stored inside objects, some of which can't have their values changed) and methods (basically functions stored inside objects).
+- One method available to input elements is `focus()`, so we can now use this line to focus the text input:
+
+```
+guessField.focus();
+```
+
+- Variables that don't contain references to form elements won't have `focus()` available to them.
+- For example, the guesses constant contains a reference to a `<p>` element, and the `guessCount` variable contains a number.
+
+### Playing with browser objects
+
+1. First of all, open up your program in a browser.
+2. Next, open your browser developer tools, and make sure the JavaScript console tab is open.
+3. Type `guessField` into the console and the console shows you that the variable contains an `<input>` element. You'll also notice that the console autocompletes the names of objects that exist inside the execution environment, including your variables!
+4. Now type in the following:
+
+```
+guessField.value = 2;
+```
+
+5. The `value` property represents the current value entered into the text field. You'll see that by entering this command, we've changed the text in the text field!
+6. Now try typing `guesses` into the console and pressing return. The console shows you that the variable contains a `<p>` element.
+7. Now try entering the following line:
+
+```
+guesses.value
+```
+
+8. The browser returns `undefined`, because paragraphs don't have the `value` property.
+9. To change the text inside a paragraph, you need the `textContent` property instead. Try this:
+
+```
+guesses.textContent = 'Where is my paragraph?';
+```
+
+10. Now for some fun stuff. Try entering the below lines, one by one:
+
+```
+guesses.style.backgroundColor = 'yellow';
+guesses.style.fontSize = '200%';
+guesses.style.padding = '10px';
+guesses.style.boxShadow = '3px 3px 6px black';
+```
+
+- Every element on a page has a style property, which itself contains an object whose properties contain all the inline CSS styles applied to that element. This allows us to dynamically set new CSS styles on elements using JavaScript.
+
+# What went wrong? Troubleshooting JavaScript
+
+- When you built up the "Guess the number" game in the previous article, you may have found that it didn't work.
+- Never fear — this article aims to save you from tearing your hair out over such problems by providing you with some tips on how to find and fix errors in JavaScript programs.
+
+## Types of error
+
+- Generally speaking, when you do something wrong in code, there are two main types of error that you'll come across:
+
+- **Syntax errors**: These are spelling errors in your code that actually cause the program not to run at all, or stop working part way through — you will usually be provided with some error messages too.
+  - These are usually okay to fix, as long as you are familiar with the right tools and know what the error messages mean!
+- **Logic errors**: These are errors where the syntax is actually correct but the code is not what you intended it to be, meaning that program runs successfully but gives incorrect results.
+
+  - These are often harder to fix than syntax errors, as there usually isn't an error message to direct you to the source of the error.
+
+- Okay, so it's not quite that simple — there are some other differentiators as you drill down deeper. But the above classifications will do at this early stage in your career. We'll look at both of these types going forward.
+
+## An erroneous example
+
+- We will work through this erroneous example and looking at the console for the errors
+
+## Fixing syntax errors
+
+- What's even more useful is that the console gives you error messages whenever a syntax error exists inside the JavaScript being fed into the browser's JavaScript engine. Now let's go hunting.
+
+## A logic error
+
+- At this point, the game should play through fine, however after playing through a few times you'll undoubtedly notice that the "random" number you've got to guess is always 1. Definitely not quite how we want the game to play out!
+
+## Other common errors
+
+- There are other common errors you'll come across in your code. This section highlights most of them.
+
+### SyntaxError: missing ; before statement
+
+- This error generally means that you have missed a semicolon at the end of one of your lines of code, but it can sometimes be more cryptic. For example, if we change this line inside the `checkGuess()` function:
+
+```
+const userGuess = Number(guessField.value);
+```
+
+- to
+
+```
+const userGuess === Number(guessField.value);
+```
+
+- It also throws this error. You should make sure that you don't mix up the assignment operator (`=`) — which sets a variable to be equal to a value — with the strict equality operator (`===`), which tests whether one value is equal to another, and returns a `true`/`false` result.
+
+### The program always says you've won, regardless of the guess you enter
+
+- This could be another symptom of mixing up the assignment and strict equality operators. For example, if we were to change this line inside `checkGuess()`:
+
+```
+if (userGuess === randomNumber) {
+```
+
+- To:
+
+```
+if (userGuess = randomNumber) {
+```
+
+- the test would always return `true`, causing the program to report that the game has been won. Be careful!
+
+### SyntaxError: missing ) after argument list
+
+- This one is pretty simple — it generally means that you've missed the closing parenthesis at the end of a function/method call.
+
+### SyntaxError: missing : after property id
+
+- This error usually relates to an incorrectly formed JavaScript object, but in this case we managed to get it by changing
+
+```
+function checkGuess() {
+```
+
+- To:
+
+```
+function checkGuess( {
+```
+
+- This has caused the browser to think that we are trying to pass the contents of the function into the function as an argument. Be careful with those parentheses!
+
+### SyntaxError: missing } after function body
+
+- This is easy — it generally means that you've missed one of your curly braces from a function or conditional structure. We got this error by deleting one of the closing curly braces near the bottom of the `checkGuess()` function.
+
+### SyntaxError: expected expression, got 'string' or SyntaxError: unterminated string literal
+
+- These errors generally mean that you've left off a string value's opening or closing quote mark. In the first error above, _string_ would be replaced with the unexpected character(s) that the browser found instead of a quote mark at the start of a string. The second error means that the string has not been ended with a quote mark.
+
+- For all of these errors, think about how we tackled the examples we looked at in the walkthrough. When an error arises, look at the line number you are given, go to that line and see if you can spot what's wrong. Bear in mind that the error is not necessarily going to be on that line, and also that the error might not be caused by the exact same problem we cited above!
+
+# Storing the information you need — Variables
+
+- After reading the last couple of articles you should now know what JavaScript is, what it can do for you, how you use it alongside other web technologies, and what its main features look like from a high level. In this article, we will get down to the real basics, looking at how to work with the most basic building blocks of JavaScript — Variables.
+
+## What is a variable?
+
+- A variable is a container for a value, like a number we might use in a sum, or a string that we might use as part of a sentence.
+
+### Variable example
+
+- A simple example:
+
+```
+<button id="button_A">Press me</button>
+<h3 id="heading_A"></h3>
+```
+
+```
+const buttonA = document.querySelector('#button_A');
+const headingA = document.querySelector('#heading_A');
+
+buttonA.onclick = () => {
+  const name = prompt('What is your name?');
+  alert(`Hello ${name}, nice to see you!`);
+  headingA.textContent = `Welcome ${name}`;
+}
+```
+
+- In this example pressing the button runs some code. The first line pops a box up on the screen that asks the reader to enter their name, and then stores the value in a variable. The second line displays a welcome message that includes their name, taken from the variable value and the third line displays that name on the page.
+
+### Without a variable
+
+- To understand why this is so useful, let's think about how we'd write this example without using a variable. It would end up looking something like this:
+
+```
+<button id="button_B">Press me</button>
+<h3 id="heading_B"></h3>
+```
+
+```
+const buttonB = document.querySelector('#button_B');
+const headingB = document.querySelector('#heading_B');
+
+buttonB.onclick = () => {
+    alert(`Hello ${prompt('What is your name?')}, nice to see you!`);
+    headingB.textContent = `Welcome ${prompt('What is your name?')}`;
+}
+```
+
+- You may not fully understand the syntax we are using (yet!), but you should be able to get the idea. If we didn't have variables available, we'd have to ask the reader for their name every time we needed to use it!
+
+- Variables just make sense, and as you learn more about JavaScript they will start to become second nature.
+
+- One special thing about variables is that they can contain just about anything — not just strings and numbers. Variables can also contain complex data and even entire functions to do amazing things. You'll learn more about this as you go along.
+
+- **Note**: We say variables contain values. This is an important distinction to make. Variables aren't the values themselves; they are containers for values. You can think of them being like little cardboard boxes that you can store things in.
+
+## Declaring a variable
+
+- To use a variable, you've first got to create it — more accurately, we call this declaring the variable. To do this, we type the keyword `let` followed by the name you want to call your variable:
+
+```
+let myName;
+let myAge;
+```
+
+- They currently have no value; they are empty containers. When you enter the variable names, you should get a value of `undefined` returned. If they don't exist, you'll get an error message — try typing in.
+
+- **Note**: Don't confuse a variable that exists but has no defined value with a variable that doesn't exist at all — they are very different things. In the box analogy you saw above, not existing would mean there's no box (variable) for a value to go in. No value defined would mean that there is a box, but it has no value inside it.
+
+## Initializing a variable
+
+- Once you've declared a variable, you can initialize it with a value. You do this by typing the variable name, followed by an equals sign (`=`), followed by the value you want to give it. For example:
+
+```
+myName = 'Chris';
+myAge = 37;
+```
+
+- You can declare and initialize a variable at the same time, like this:
+
+```
+let myDog = 'Rover';
+```
+
+- This is probably what you'll do most of the time, as it is quicker than doing the two actions on two separate lines.
+
+## A note about var
+
+- You'll probably also see a different way to declare variables, using the `var` keyword:
+
+```
+var myName;
+var myAge;
+```
+
+- Back when JavaScript was first created, this was the only way to declare variables. The design of `var` is confusing and error-prone.
+- So `let` was created in modern versions of JavaScript, a new keyword for creating variables that works somewhat differently to var, fixing its issues in the process.
+
+- A couple of simple differences are explained below. We won't go into all the differences now, but you'll start to discover them as you learn more about JavaScript (if you really want to read about them now, feel free to check out our let reference page).
+
+- For a start, if you write a multiline JavaScript program that declares and initializes a variable, you can actually declare a variable with `var` after you initialize it and it will still work. For example:
+
+```
+myName = 'Chris';
+
+function logName() {
+  console.log(myName);
+}
+
+logName();
+
+var myName;
+```
+
+- This works because of **hoisting** — read var hoisting for more detail on the subject.
+
+- Hoisting no longer works with `let`. If we changed `var` to `let` in the above example, it would fail with an error.
+- This is a good thing — declaring a variable after you initialize it results in confusing, harder to understand code.
+
+- Secondly, when you use `var`, you can declare the same variable as many times as you like, but with let you can't. The following would work:
+
+```
+var myName = 'Chris';
+var myName = 'Bob';
+```
+
+- But the following would throw an error on the second line:
+
+```
+let myName = 'Chris';
+let myName = 'Bob';
+```
+
+- You'd have to do this instead:
+
+```
+let myName = 'Chris';
+myName = 'Bob';
+```
+
+- Again, this is a sensible language decision. There is no reason to redeclare variables — it just makes things more confusing.
+
+- For these reasons and more, we recommend that you use `let` in your code, rather than `var`. There is no longer any reason to use `var`, as it has been supported since Internet Explorer 11.
