@@ -1259,3 +1259,73 @@ myString
 ```
 
 - Here we're creating a JavaScript object, then checking what it contains, then converting it to a JSON string using `stringify()` — saving the return value in a new variable — then checking it again.
+
+# Object building practice
+
+- In previous articles we looked at all the essential JavaScript object theory and syntax details, giving you a solid base to start from. In this article we dive into a practical exercise, giving you some more practice in building custom JavaScript objects, with a fun and colorful result.
+
+## Animating the ball
+
+- We start working with this piece of code:
+
+```
+function loop() {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+  ctx.fillRect(0, 0, width, height);
+
+  for (const ball of balls) {
+    ball.draw();
+    ball.update();
+  }
+
+  requestAnimationFrame(loop);
+}
+```
+
+- All programs that animate things generally involve an animation loop, which serves to update the information in the program and then render the resulting view on each frame of the animation; this is the basis for most games and other such programs. Our `loop()` function does the following:
+
+  - Sets the canvas fill color to semi-transparent black, then draws a rectangle of the color across the whole width and height of the canvas, using `fillRect()` (the four parameters provide a start coordinate, and a width and height for the rectangle drawn).
+    - This serves to cover up the previous frame's drawing before the next one is drawn.
+    - If you don't do this, you'll just see long snakes worming their way around the canvas instead of balls moving!
+    - The color of the fill is set to semi-transparent, rgba(0,0,0,0.25), to allow the previous few frames to shine through slightly, producing the little trails behind the balls as they move. If you changed 0.25 to 1, you won't see them at all any more. Try varying this number to see the effect it has.
+  - Loops through all the balls in the `balls` array, and runs each ball's `draw()` and `update()` function to draw each one on the screen, then do the necessary updates to position and velocity in time for the next frame.
+  - Runs the function again using the `requestAnimationFrame()` method — when this method is repeatedly run and passed the same function name, it runs that function a set number of times per second to create a smooth animation.
+    - This is generally done recursively — which means that the function is calling itself every time it runs, so it runs over and over again.
+
+- Finally, add the following line to the bottom of your code — we need to call the function once to get the animation started.
+
+```
+loop();
+```
+
+- That's it for the basics — try saving and refreshing to test your bouncing balls out!
+
+## Adding collision detection
+
+- Now for a bit of fun, let's add some collision detection to our program, so our balls know when they have hit another ball.
+
+```
+collisionDetect() {
+  for (const ball of balls) {
+    if (this !== ball) {
+      const dx = this.x - ball.x;
+      const dy = this.y - ball.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < this.size + ball.size) {
+        ball.color = this.color = randomRGB();
+      }
+    }
+  }
+}
+```
+
+- This method is a little complex, so don't worry if you don't understand exactly how it works for now. An explanation follows:
+  - For each ball, we need to check every other ball to see if it has collided with the current ball. To do this, we start another `for...of` loop to loop through all the balls in the `balls[]` array.
+  - Immediately inside the for loop, we use an `if` statement to check whether the current ball being looped through is the same ball as the one we are currently checking.
+    - We don't want to check whether a ball has collided with itself! To do this, we check whether the current ball (i.e., the ball whose `collisionDetect` method is being invoked) is the same as the loop ball (i.e., the ball that is being referred to by the current iteration of the for loop in the collisionDetect method).
+    - We then use `!` to negate the check, so that the code inside the if statement only runs if they are **not** the same.
+  - We then use a common algorithm to check the collision of two circles. We are basically checking whether any of the two circle's areas overlap. This is explained further in 2D collision detection.
+  - If a collision is detected, the code inside the inner `if` statement is run.
+    - In this case, we only set the `color` property of both the circles to a new random color. We could have done something far more complex, like get the balls to bounce off each other realistically, but that would have been far more complex to implement.
+    - For such physics simulations, developers tend to use a games or physics libraries such as PhysicsJS, matter.js, Phaser, etc.
