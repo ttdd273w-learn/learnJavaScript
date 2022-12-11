@@ -244,3 +244,519 @@ audioElement.addEventListener('ended', () => {
 - This is done because autoplaying audio is usually really annoying and we really shouldn't be subjecting our users to it.
 
 - **Note**: Depending on how strict the browser is, such security mechanisms might even stop the example from working locally, i.e. if you load the local example file in your browser instead of running it from a web server. At the time of writing, our Web Audio API example wouldn't work locally on Google Chrome — we had to upload it to GitHub before it would work.
+
+# Manipulating documents
+
+- When writing web pages and apps, one of the most common things you'll want to do is manipulate the document structure in some way.
+- This is usually done by using the Document Object Model (DOM), a set of APIs for controlling HTML and styling information that makes heavy use of the `Document` object.
+- In this article we'll look at how to use the DOM in detail, along with some other interesting APIs that can alter your environment in interesting ways.
+
+## The important parts of a web browser
+
+- Web browsers are very complicated pieces of software with a lot of moving parts, many of which can't be controlled or manipulated by a web developer using JavaScript.
+- You might think that such limitations are a bad thing, but browsers are locked down for good reasons, mostly centering around security.
+- Imagine if a web site could get access to your stored passwords or other sensitive information, and log into websites as if it were you?
+
+- Despite the limitations, Web APIs still give us access to a lot of functionality that enable us to do a great many things with web pages.
+- There are a few really obvious bits you'll reference regularly in your code — consider the following diagram, which represents the main parts of a browser directly involved in viewing web pages:
+
+![website-parts](./assets/document-window-navigator.png)
+
+- The window is the browser tab that a web page is loaded into; this is represented in JavaScript by the `Window` object.
+  - Using methods available on this object you can do things like return the window's size (see `Window.innerWidth` and `Window.innerHeight`), manipulate the document loaded into that window, store data specific to that document on the client-side (for example using a local database or other storage mechanism), attach an event handler to the current window, and more.
+- The navigator represents the state and identity of the browser (i.e. the user-agent) as it exists on the web.
+  - In JavaScript, this is represented by the `Navigator` object.
+  - You can use this object to retrieve things like the user's preferred language, a media stream from the user's webcam, etc.
+- The document (represented by the DOM in browsers) is the actual page loaded into the window, and is represented in JavaScript by the `Document` object.
+
+  - You can use this object to return and manipulate information on the HTML and CSS that comprises the document, for example get a reference to an element in the DOM, change its text content, apply new styles to it, create new elements and add them to the current element as children, or even delete it altogether.
+
+- In this article we'll focus mostly on manipulating the document, but we'll show a few other useful bits besides.
+
+## The document object model
+
+- The document currently loaded in each one of your browser tabs is represented by a document object model.
+- This is a "tree structure" representation created by the browser that enables the HTML structure to be easily accessed by programming languages — for example the browser itself uses it to apply styling and other information to the correct elements as it renders a page, and developers like you can manipulate the DOM with JavaScript after the page has been rendered.
+
+- We have created a simple example page.
+- It is a very simple page containing a `<section>` element inside which you can find an image, and a paragraph with a link inside. The HTML source code looks like this:
+
+```
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Simple DOM example</title>
+  </head>
+  <body>
+    <section>
+      <img
+        src="dinosaur.png"
+        alt="A red Tyrannosaurus Rex: A two legged dinosaur standing upright like a human, with small arms, and a large head with lots of sharp teeth." />
+      <p>
+        Here we will add a link to the
+        <a href="https://www.mozilla.org/">Mozilla homepage</a>
+      </p>
+    </section>
+  </body>
+</html>
+```
+
+- The DOM on the other hand looks like this:
+
+![dom](./assets/dom-screenshot.png)
+
+- Each entry in the tree is called a **node**.
+- You can see in the diagram above that some nodes represent elements (identified as `HTML`, `HEAD`, `META` and so on) and others represent text (identified as #text).
+- There are other types of nodes as well, but these are the main ones you'll encounter.
+
+- Nodes are also referred to by their position in the tree relative to other nodes:
+
+  - **Root node**: The top node in the tree, which in the case of HTML is always the `HTML` node (other markup vocabularies like SVG and custom XML will have different root elements).
+  - **Child node**: A node _directly_ inside another node. For example, `IMG` is a child of `SECTION` in the above example.
+  - **Descendant node**: A node anywhere inside another node. For example, `IMG` is a child of `SECTION` in the above example, and it is also a descendant. `IMG` is not a child of `BODY`, as it is two levels below it in the tree, but it is a descendant of `BODY`.
+  - **Parent node**: A node which has another node inside it. For example, `BODY` is the parent node of `SECTION` in the above example.
+  - **Sibling nodes**: Nodes that sit on the same level in the DOM tree. For example, `IMG` and `P` are siblings in the above example.
+
+- It is useful to familiarize yourself with this terminology before working with the DOM, as a number of the code terms you'll come across make use of them. You may have also come across them if you have studied CSS (e.g. descendant selector, child selector).
+
+## Active learning: Basic DOM manipulation
+
+- We will work through another example:
+
+1. Add a `<script></script>` element just above the closing `</body>` tag.
+2. To manipulate an element inside the DOM, you first need to select it and store a reference to it inside a variable. Inside your script element, add the following line:
+
+```
+const link = document.querySelector('a');
+```
+
+4. Now we have the element reference stored in a variable, we can start to manipulate it using properties and methods available to it (these are defined on interfaces like `HTMLAnchorElement` in the case of `<a>` element, its more general parent interface `HTMLElement`, and `Node` — which represents all nodes in a DOM). First of all, let's change the text inside the link by updating the value of the `Node.textContent` property. Add the following line below the previous one:
+
+```
+link.textContent = 'Mozilla Developer Network';
+```
+
+5. We should also change the URL the link is pointing to, so that it doesn't go to the wrong place when it is clicked on. Add the following line, again at the bottom:
+
+```
+link.href = 'https://developer.mozilla.org';
+```
+
+- Note that, as with many things in JavaScript, there are many ways to select an element and store a reference to it in a variable.
+- `Document.querySelector()` is the recommended modern approach. It is convenient because it allows you to select elements using CSS selectors.
+- The above `querySelector()` call will match the first `<a>` element that appears in the document. If you wanted to match and do things to multiple elements, you could use `Document.querySelectorAll()`, which matches every element in the document that matches the selector, and stores references to them in an array-like object called a `NodeList`.
+
+- There are older methods available for grabbing element references, such as:
+
+  - `Document.getElementById()`, which selects an element with a given id attribute value, e.g. `<p id="myId">My paragraph</p>`. The ID is passed to the function as a parameter, i.e. `const elementRef = document.getElementById('myId')`.
+  - `Document.getElementsByTagName()`, which returns an array-like object containing all the elements on the page of a given type, for example `<p>`s, `<a>`s, etc.
+  - The element type is passed to the function as a parameter, i.e. `const elementRefArray = document.getElementsByTagName('p')`.
+
+- These two work better in older browsers than the modern methods like `querySelector()`, but are not as convenient. Have a look and see what others you can find!
+
+### Creating and placing new nodes
+
+- The above has given you a little taste of what you can do, but let's go further and look at how we can create new elements.
+
+1. Going back to the current example, let's start by grabbing a reference to our `<section>` element — add the following code at the bottom of your existing script (do the same with the other lines too):
+
+```
+const sect = document.querySelector('section');
+```
+
+2. Now let's create a new paragraph using `Document.createElement()` and give it some text content in the same way as before:
+
+```
+const para = document.createElement('p');
+para.textContent = 'We hope you enjoyed the ride.';
+```
+
+3. You can now append the new paragraph at the end of the section using `Node.appendChild()`:
+
+```
+sect.appendChild(para);
+```
+
+4. Finally for this part, let's add a text node to the paragraph the link sits inside, to round off the sentence nicely. First we will create the text node using `Document.createTextNode()`:
+
+```
+const text = document.createTextNode(' — the premier source for web development knowledge.');
+```
+
+5. Now we'll grab a reference to the paragraph the link is inside, and append the text node to it:
+
+- That's most of what you need for adding nodes to the DOM — you'll make a lot of use of these methods when building dynamic interfaces (we'll look at some examples later).
+
+### Moving and removing elements
+
+- There may be times when you want to move nodes, or delete them from the DOM altogether. This is perfectly possible.
+
+- If we wanted to move the paragraph with the link inside it to the bottom of the section, we could do this:
+
+```
+sect.appendChild(linkPara);
+```
+
+- This moves the paragraph down to the bottom of the section.
+- You might have thought it would make a second copy of it, but this is not the case — `linkPara` is a reference to the one and only copy of that paragraph.
+- If you wanted to make a copy and add that as well, you'd need to use `Node.cloneNode()` instead.
+
+- Removing a node is pretty simple as well, at least when you have a reference to the node to be removed and its parent. In our current case, we just use `Node.removeChild()`, like this:
+
+```
+sect.removeChild(linkPara);
+```
+
+- When you want to remove a node based only on a reference to itself, which is fairly common, you can use `Element.remove()`:
+
+```
+linkPara.remove();
+```
+
+- This method is not supported in older browsers. They have no method to tell a node to remove itself, so you'd have to do the following.
+
+```
+linkPara.parentNode.removeChild(linkPara);
+```
+
+### Manipulating styles
+
+- It is possible to manipulate CSS styles via JavaScript in a variety of ways.
+
+- To start with, you can get a list of all the stylesheets attached to a document using `Document.stylesheets`, which returns an array-like object with CSSStyleSheet objects.
+- You can then add/remove styles as wished.
+- However, we're not going to expand on those features because they are a somewhat archaic and difficult way to manipulate style. There are much easier ways.
+
+- The first way is to add inline styles directly onto elements you want to dynamically style. This is done with the `HTMLElement.style` property, which contains inline styling information for each element in the document.
+- You can set properties of this object to directly update element styles.
+
+1. As an example, try adding these lines to our ongoing example:
+
+```
+para.style.color = 'white';
+para.style.backgroundColor = 'black';
+para.style.padding = '10px';
+para.style.width = '250px';
+para.style.textAlign = 'center';
+```
+
+2. Reload the page and you'll see that the styles have been applied to the paragraph. If you look at that paragraph in your browser's Page Inspector/DOM inspector, you'll see that these lines are indeed adding inline styles to the document:
+
+```
+<p
+  style="color: white; background-color: black; padding: 10px; width: 250px; text-align: center;">
+  We hope you enjoyed the ride.
+</p>
+```
+
+- **Note**: Notice how the JavaScript property versions of the CSS styles are written in lower camel case whereas the CSS versions are hyphenated (e.g. `backgroundColor` versus `background-color`). Make sure you don't get these mixed up, otherwise it won't work.
+
+- There is another common way to dynamically manipulate styles on your document, which we'll look at now.
+
+1. Delete the previous five lines you added to the JavaScript.
+2. Add the following inside your HTML `<head>`:
+
+```
+<style>
+  .highlight {
+    color: white;
+    background-color: black;
+    padding: 10px;
+    width: 250px;
+    text-align: center;
+  }
+</style>
+```
+
+3. Now we'll turn to a very useful method for general HTML manipulation — `Element.setAttribute()` — this takes two arguments, the attribute you want to set on the element, and the value you want to set it to. In this case we will set a class name of highlight on our paragraph:
+
+```
+para.setAttribute('class', 'highlight');
+```
+
+- Refresh your page, and you'll see no change — the CSS is still applied to the paragraph, but this time by giving it a class that is selected by our CSS rule, not as inline CSS styles.
+
+- Which method you choose is up to you; both have their advantages and disadvantages.
+- The first method takes less setup and is good for simple uses, whereas the second method is more purist (no mixing CSS and JavaScript, no inline styles, which are seen as a bad practice).
+- As you start building larger and more involved apps, you will probably start using the second method more, but it is really up to you.
+
+- At this point, we haven't really done anything useful!
+- There is no point using JavaScript to create static content — you might as well just write it into your HTML and not use JavaScript.
+- It is more complex than HTML, and creating your content with JavaScript also has other issues attached to it (such as not being readable by search engines).
+
+## Active learning: A dynamic shopping list
+
+- In this challenge we want to make a simple shopping list example that allows you to dynamically add items to the list using a form input and button. When you add an item to the input and press the button:
+  - The item should appear in the list.
+  - Each item should be given a button that can be pressed to delete that item off the list.
+  - The input should be emptied and focused ready for you to enter another item.
+
+1. To start with, make a copy of the file. You'll see that it has some minimal CSS, a div with a label, input, and button, and an empty list and `<script>` element. You'll be making all your additions inside the script.
+2. Create three variables that hold references to the list (`<ul>`), `<input>`, and `<button>` elements.
+3. Create a function that will run in response to the button being clicked.
+4. Inside the function body, start off by storing the current value of the input element in a variable.
+5. Next, empty the input element by setting its value to an empty string — `''`.
+6. Create three new elements — a list item (`<li>`), `<span>`, and `<button>`, and store them in variables.
+7. Append the span and the button as children of the list item.
+8. Set the text content of the span to the input element value you saved earlier, and the text content of the button to `'Delete'`.
+9. Append the list item as a child of the list.
+10. Attach an event handler to the delete button so that, when clicked, it will delete the entire list item (`<li>...</li>`).
+11. Finally, use the `focus()` method to focus the input element ready for entering the next shopping list item.
+
+## Summary
+
+- We have reached the end of our study of document and DOM manipulation. At this point you should understand what the important parts of a web browser are with respect to controlling documents and other aspects of the user's web experience. Most importantly, you should understand what the Document Object Model is, and how to manipulate it to create useful functionality.
+
+## See also
+
+- There are lots more features you can use to manipulate your documents. Check out some of our references and see what you can discover:
+  - `Document`
+  - `Window`
+  - `Node`
+  - `HTMLElement`, `HTMLInputElement`, `HTMLImageElement`, etc.
+
+# Fetching data from the server
+
+- Another very common task in modern websites and applications is retrieving individual data items from the server to update sections of a webpage without having to load an entire new page. This seemingly small detail has had a huge impact on the performance and behavior of sites, so in this article, we'll explain the concept and look at technologies that make it possible: in particular, the Fetch API.
+
+## What is the problem here?
+
+- A web page consists of an HTML page and (usually) various other files, such as stylesheets, scripts, and images.
+- The basic model of page loading on the Web is that your browser makes one or more HTTP requests to the server for the files needed to display the page, and the server responds with the requested files.
+- If you visit another page, the browser requests the new files, and the server responds with them.
+
+![traditional-loading](./assets/traditional-loading.png)
+
+- This model works perfectly well for many sites. But consider a website that's very data-driven.
+- For example, a library website like the Vancouver Public Library.
+- Among other things you could think of a site like this as a user interface to a database.
+- It might let you search for a particular genre of book, or might show you recommendations for books you might like, based on books you've previously borrowed.
+- When you do this, it needs to update the page with the new set of books to display.
+- But note that most of the page content — including items like the page header, sidebar, and footer — stays the same.
+
+- The trouble with the traditional model here is that we'd have to fetch and load the entire page, even when we only need to update one part of it.
+- This is inefficient and can result in a poor user experience.
+
+- So instead of the traditional model, many websites use JavaScript APIs to request data from the server and update the page content without a page load.
+- So when the user searches for a new product, the browser only requests the data which is needed to update the page — the set of new books to display, for instance.
+
+![fetch-update](./assets/fetch-update.png)
+
+- The main API here is the Fetch API.
+- This enables JavaScript running in a page to make an HTTP request to a server to retrieve specific resources.
+- When the server provides them, the JavaScript can use the data to update the page, typically by using DOM manipulation APIs.
+- The data requested is often JSON, which is a good format for transferring structured data, but can also be HTML or just text.
+
+- This is a common pattern for data-driven sites such as Amazon, YouTube, eBay, and so on. With this model:
+
+  - Page updates are a lot quicker and you don't have to wait for the page to refresh, meaning that the site feels faster and more responsive.
+  - Less data is downloaded on each update, meaning less wasted bandwidth. This may not be such a big issue on a desktop on a broadband connection, but it's a major issue on mobile devices and in countries that don't have ubiquitous fast internet service.
+
+- **Note**: In the early days, this general technique was known as Asynchronous JavaScript and XML (**Ajax**), because it tended to request XML data. This is normally not the case these days (you'd be more likely to request JSON), but the result is still the same, and the term "Ajax" is still often used to describe the technique.
+
+- To speed things up even further, some sites also store assets and data on the user's computer when they are first requested, meaning that on subsequent visits they use the local versions instead of downloading fresh copies every time the page is first loaded. The content is only reloaded from the server when it has been updated.
+
+## The Fetch API
+
+- Let's walk through a couple of examples of the Fetch API.
+
+### Fetching text content
+
+- For this example, we'll request data out of a few different text files and use them to populate a content area.
+
+- This series of files will act as our fake database; in a real application, we'd be more likely to use a server-side language like PHP, Python, or Node to request our data from a database.
+- Here, however, we want to keep it simple and concentrate on the client-side part of this.
+
+- To begin this example, make a local copy of fetch-start.html and the four text files — verse1.txt, verse2.txt, verse3.txt, and verse4.txt — in a new directory on your computer. In this example, we will fetch a different verse of the poem (which you may well recognize) when it's selected in the drop-down menu.
+
+- Just inside the `<script>` element, add the following code. This stores references to the `<select>` and `<pre>` elements and adds a listener to the `<select>` element, so that when the user selects a new value, the new value is passed to function named `updateDisplay()` as a parameter.
+
+- A `<pre>` tag defines a preformatted text, displayed in a fixed-width font, and the text preserves both spaces and line breaks.
+
+```
+const verseChoose = document.querySelector('select');
+const poemDisplay = document.querySelector('pre');
+
+verseChoose.addEventListener('change', () => {
+  const verse = verseChoose.value;
+  updateDisplay(verse);
+});
+```
+
+- Let's define our `updateDisplay()` function. First of all, put the following beneath your previous code block — this is the empty shell of the function.
+
+```
+function updateDisplay(verse) {
+
+}
+```
+
+- We'll start our function by constructing a relative URL pointing to the text file we want to load, as we'll need it later.
+- The value of the `<select>` element at any time is the same as the text inside the selected `<option>` (unless you specify a different value in a value attribute) — so for example "Verse 1".
+- The corresponding verse text file is "verse1.txt", and is in the same directory as the HTML file, therefore just the file name will do.
+
+- However, web servers tend to be case sensitive, and the file name doesn't have a space in it.
+- To convert "Verse 1" to "verse1.txt" we need to convert the V to lower case, remove the space, and add `.txt` on the end. This can be done with `replace()`, `toLowerCase()`, and string concatenation. Add the following lines inside your `updateDisplay()` function:
+
+```
+verse = verse.replace(' ', '').toLowerCase();
+const url = `${verse}.txt`;
+```
+
+- Finally, we're ready to use the Fetch API:
+
+```
+// Call `fetch()`, passing in the URL.
+fetch(url)
+  // fetch() returns a promise. When we have received a response from the server,
+  // the promise's `then()` handler is called with the response.
+  .then((response) => {
+    // Our handler throws an error if the request did not succeed.
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+    // Otherwise (if the response succeeded), our handler fetches the response
+    // as text by calling response.text(), and immediately returns the promise
+    // returned by `response.text()`.
+    return response.text();
+  })
+  // When response.text() has succeeded, the `then()` handler is called with
+  // the text, and we copy it into the `poemDisplay` box.
+  .then((text) => poemDisplay.textContent = text)
+  // Catch any errors that might happen, and display a message
+  // in the `poemDisplay` box.
+  .catch((error) => poemDisplay.textContent = `Could not fetch verse: ${error}`);
+```
+
+- There's quite a lot to unpack in here.
+
+- First, the entry point to the Fetch API is a global function called `fetch()`, that takes the URL as a parameter (it takes another optional parameter for custom settings, but we're not using that here).
+
+- Next, `fetch()` is an asynchronous API which returns a Promise. You'll find that article also talks about the `fetch()` API!
+
+- So because `fetch()` returns a promise, we pass a function into the `then()` method of the returned promise.
+- This method will be called when the HTTP request has received a response from the server. In the handler, we check that the request succeeded, and throw an error if it didn't. Otherwise, we call `response.text()`, to get the response body as text.
+
+- It turns out that `response.text()` is also asynchronous, so we return the promise it returns, and pass a function into the `then()` method of this new promise. This function will be called when the response text is ready, and inside it we will update our `<pre>` block with the text.
+
+- Finally, we chain a `catch()` handler at the end, to catch any errors thrown in either of the asynchronous functions we called or their handlers.
+
+- One problem with the example as it stands is that it won't show any of the poem when it first loads. To fix this, add the following two lines at the bottom of your code (just above the closing `</script>` tag) to load verse 1 by default, and make sure the `<select>` element always shows the correct value:
+
+```
+updateDisplay('Verse 1');
+verseChoose.value = 'Verse 1';
+```
+
+### Serving your example from a server
+
+- Modern browsers will not run HTTP requests if you just run the example from a local file. This is because of security restrictions (for more on web security, read Website security).
+
+- To get around this, we need to test the example by running it through a local web server. To find out how to do this, read our guide to setting up a local testing server.
+
+### The can store
+
+- In this example we have created a sample site called The Can Store — it's a fictional supermarket that only sells canned goods. You can find this example live on GitHub, and see the source code.
+
+- By default, the site displays all the products, but you can use the form controls in the left-hand column to filter them by category, or search term, or both.
+
+- There is quite a lot of complex code that deals with filtering the products by category and search terms, manipulating strings so the data displays correctly in the UI, etc.
+- We won't discuss all of it in the article, but you can find extensive comments in the code (see `can-script.js`).
+
+- We will, however, explain the Fetch code.
+
+- The first block that uses Fetch can be found at the start of the JavaScript:
+
+```
+fetch('products.json')
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then((json) => initialize(json))
+  .catch((err) => console.error(`Fetch problem: ${err.message}`));
+```
+
+- The `fetch()` function returns a promise.
+- If this completes successfully, the function inside the first `.then()` block contains the response returned from the network.
+
+- Inside this function we:
+
+  - check that the server didn't return an error (such as `404 Not Found`). If it did, we throw the error.
+  - call `json()` on the response. This will retrieve the data as a JSON object. We return the promise returned by `response.json()`.
+
+- Next we pass a function into the `then()` method of that returned promise.
+- This function will be passed an object containing the response data as JSON, which we pass into the `initialize()` function.
+- This function which starts the process of displaying all the products in the user interface.
+
+- To handle errors, we chain a `.catch()` block onto the end of the chain.
+- This runs if the promise fails for some reason.
+- Inside it, we include a function that is passed as a parameter, an `err` object.
+- This `err` object can be used to report the nature of the error that has occurred, in this case we do it with a simple `console.log()`.
+
+- However, a complete website would handle this error more gracefully by displaying a message on the user's screen and perhaps offering options to remedy the situation, but we don't need anything more than a simple `console.error()`.
+
+- You can test the failure case yourself:
+
+1. Make a local copy of the example files.
+2. Run the code through a web server (as described above, in Serving your example from a server).
+3. Modify the path to the file being fetched, to something like 'produc.json' (make sure it is misspelled).
+4. Now load the index file in your browser (via `localhost:8000`) and look in your browser developer console. You'll see a message similar to "Fetch problem: HTTP error: 404".
+
+- The second Fetch block can be found inside the `fetchBlob()` function:
+
+```
+fetch(url)
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+    return response.blob();
+  })
+  .then((blob) => showProduct(blob, product))
+  .catch((err) => console.error(`Fetch problem: ${err.message}`));
+```
+
+- This works in much the same way as the previous one, except that instead of using `json()`, we use `blob()`.
+- In this case we want to return our response as an image file, and the data format we use for that is **Blob** (the term is an abbreviation of "Binary Large Object" and can basically be used to represent large file-like objects, such as images or video files).
+
+- Once we've successfully received our blob, we pass it into our `showProduct()` function, which displays it.
+
+## The XMLHttpRequest API
+
+- Sometimes, especially in older code, you'll see another API called `XMLHttpRequest` (often abbreviated as "XHR") used to make HTTP requests.
+- This predated Fetch, and was really the first API widely used to implement AJAX. We recommend you use Fetch if you can: it's a simpler API and has more features than `XMLHttpRequest`.
+- We won't go through an example that uses XMLHttpRequest, but we will show you what the `XMLHttpRequest` version of our first can store request would look like:
+
+```
+const request = new XMLHttpRequest();
+
+try {
+  request.open('GET', 'products.json');
+
+  request.responseType = 'json';
+
+  request.addEventListener('load', () => initialize(request.response));
+  request.addEventListener('error', () => console.error('XHR error'));
+
+  request.send();
+
+} catch (error) {
+  console.error(`XHR error ${request.status}`);
+}
+```
+
+- There are five stages to this:
+
+  1. Create a new `XMLHttpRequest` object.
+  2. Call its `open()` method to initialize it.
+  3. Add an event listener to its `load` event, which fires when the response has completed successfully. In the listener we call `initialize()` with the data.
+  4. Add an event listener to its `error` event, which fires when the request encounters an error.
+  5. Send the request.
+
+- We also have to wrap the whole thing in the `try...catch` block, to handle any errors thrown by `open()` or `send()`.
+
+- Hopefully you think the Fetch API is an improvement over this. In particular, see how we have to handle errors in two different places.
